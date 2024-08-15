@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE HYPOTHIUS ONE-SHEET CREATOR</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 3em;
+            background: linear-gradient(to right, #ff4e50, #f9d423);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            animation: fadeIn 1s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .description {
+            text-align: center;
+            font-style: italic;
+            margin-bottom: 20px;
+            color: #b3b3b3;
+        }
+        .discord-link {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .discord-link a {
+            color: #7289da;
+            text-decoration: none;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #b3b3b3;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background-color: #2c2c2c;
+            color: #ffffff;
+            border-radius: 5px;
+        }
+        button {
+            background: linear-gradient(to right, #ff4e50, #f9d423);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: transform 0.2s ease;
+        }
+        button:hover {
+            transform: scale(1.05);
+        }
+        #preview {
+            background-color: white;
+            color: black;
+            padding: 40px;
+            margin-top: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Updated PDF styles */
+        .pdf-content {
+            font-family: 'Helvetica', sans-serif;
+            color: #333;
+            max-width: 740px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #ffffff;
+        }
+        .pdf-header {
+            text-align: center;
+            margin-bottom: 30px;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 30px;
+            border-radius: 8px;
+        }
+        .pdf-header h2 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+        .pdf-header .genre {
+            font-style: italic;
+            font-size: 18px;
+        }
+        .pdf-section {
+            margin-bottom: 30px;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .pdf-section h3 {
+            font-size: 24px;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .pdf-act {
+            background-color: #ffffff;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            border: 1px solid #e9ecef;
+        }
+        .pdf-act h4 {
+            color: #2c3e50;
+            margin-top: 0;
+            text-transform: uppercase;
+            font-size: 18px;
+        }
+        .pdf-market-potential {
+            font-style: italic;
+            text-align: center;
+            font-size: 18px;
+            color: #34495e;
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #e8f6f3;
+            border-radius: 8px;
+        }
+        .pdf-contact-info {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 16px;
+            color: #7f8c8d;
+        }
+        .pdf-divider {
+            border-top: 1px solid #e9ecef;
+            margin: 25px 0;
+            position: relative;
+        }
+        .pdf-divider::after {
+            content: '❧';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ffffff;
+            padding: 0 15px;
+            color: #3498db;
+            font-size: 20px;
+        }
+        .pdf-image {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>THE HYPOTHIUS ONE-SHEET CREATOR</h1>
+        <p class="description">Make a one-sheet for your film to show producers and distributers</p>
+        <p class="discord-link">Join our Discord: <a href="https://discord.gg/V5cwEAa9h5" target="_blank">https://discord.gg/V5cwEAa9h5</a></p>
+
+        <form id="oneSheetForm">
+            <div class="form-group">
+                <label for="filmName">Film Name:</label>
+                <input type="text" id="filmName" required>
+            </div>
+
+            <div class="form-group">
+                <label for="genre">Genre:</label>
+                <input type="text" id="genre" required>
+            </div>
+
+            <div class="form-group">
+                <label for="logline">Logline:</label>
+                <textarea id="logline" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="connection">Your Connection to the Film:</label>
+                <textarea id="connection" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="act1">Act 1 Summary:</label>
+                <textarea id="act1" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="act2">Act 2 Summary:</label>
+                <textarea id="act2" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="act3">Act 3 Summary:</label>
+                <textarea id="act3" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="marketPotential">Market Potential:</label>
+                <input type="text" id="marketPotential" required>
+            </div>
+
+            <div class="form-group">
+                <label for="contactInfo">Contact Information:</label>
+                <textarea id="contactInfo" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="photoUpload">Upload Photo:</label>
+                <input type="file" id="photoUpload" accept="image/*">
+            </div>
+
+            <button type="submit">Generate One-Sheet</button>
+        </form>
+
+        <div id="preview"></div>
+    </div>
+
+    <script>
+        document.getElementById('oneSheetForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const preview = document.getElementById('preview');
+            preview.innerHTML = `
+                <div class="pdf-content">
+                    <div class="pdf-header">
+                        <h2>${document.getElementById('filmName').value.toUpperCase()}</h2>
+                        <p class="genre">${document.getElementById('genre').value}</p>
+                    </div>
+                    
+                    <div class="pdf-section">
+                        <h3>LOGLINE</h3>
+                        <p>${document.getElementById('logline').value}</p>
+                    </div>
+                    
+                    <div class="pdf-divider"></div>
+                    
+                    <div class="pdf-section">
+                        <h3>CONNECTION TO THE FILM</h3>
+                        <p>${document.getElementById('connection').value}</p>
+                    </div>
+                    
+                    <div class="pdf-divider"></div>
+                    
+                    <div class="pdf-section">
+                        <h3>FILM SUMMARY</h3>
+                        <div class="pdf-act">
+                            <h4>Act 1</h4>
+                            <p>${document.getElementById('act1').value}</p>
+                        </div>
+                        <div class="pdf-act">
+                            <h4>Act 2</h4>
+                            <p>${document.getElementById('act2').value}</p>
+                        </div>
+                        <div class="pdf-act">
+                            <h4>Act 3</h4>
+                            <p>${document.getElementById('act3').value}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="pdf-divider"></div>
+                    
+                    <div class="pdf-market-potential">
+                        <h3>MARKET POTENTIAL</h3>
+                        <p>${document.getElementById('marketPotential').value}</p>
+                    </div>
+                    
+                    <div class="pdf-divider"></div>
+                    
+                    <div class="pdf-contact-info">
+                        <h3>CONTACT INFORMATION</h3>
+                        <p>${document.getElementById('contactInfo').value}</p>
+                    </div>
+                </div>
+            `;
+
+            const photoUpload = document.getElementById('photoUpload');
+            if (photoUpload.files && photoUpload.files[0]) {
+                const img = document.createElement('img');
+                img.src = URL.createObjectURL(photoUpload.files[0]);
+                img.className = 'pdf-image';
+                preview.querySelector('.pdf-header').insertAdjacentElement('afterend', img);
+            }
+
+            // Generate PDF
+            html2canvas(document.getElementById('preview')).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jspdf.jsPDF({
+                    orientation: 'portrait',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+                const imgProps = pdf.getImageProperties(imgData);
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                
+                // Adjust scaling to fit content on one page
+                const scale = Math.min(1, pdf.internal.pageSize.getHeight() / pdfHeight);
+                
+                // Center the content horizontally
+                const xOffset = (pdfWidth - (pdfWidth * scale)) / 2;
+                
+                pdf.addImage(imgData, 'PNG', xOffset, 0, pdfWidth * scale, pdfHeight * scale);
+                pdf.save('film_one_sheet.pdf');
+            });
+        });
+    </script>
+</body>
+</html>
